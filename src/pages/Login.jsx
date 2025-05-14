@@ -33,9 +33,9 @@ const LoginPage = () => {
 
 
       if (!response.ok) {
-        const data = await response.json();
+        const errorMessage = await response.json();
         const error = new Error(
-           data.error || "Une erreur est survenue lors de l'inscription."
+          errorMessage.error || "Une erreur est survenue lors de l'inscription."
         );
         error.status = response.status;
         throw error;
