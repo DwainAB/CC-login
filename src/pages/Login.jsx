@@ -31,17 +31,16 @@ const LoginPage = () => {
         },
       )
 
+      const data = await response.json();
 
       if (!response.ok) {
-        const errorMessage = await response.json();
         const error = new Error(
-          errorMessage.error || "Une erreur est survenue lors de l'inscription."
+          data.error || "Une erreur est survenue lors de l'inscription."
         );
         error.status = response.status;
         throw error;
      }
 
-     const data = await response.json()
      localStorage.setItem('auth', JSON.stringify({
       token : data.access_token,
       expiresAt : new Date(Date.now() + data.expires_in * 1000).toString()
