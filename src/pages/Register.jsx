@@ -33,13 +33,13 @@ const Register = () => {
 
       if (!response.ok) {
         const data = await response.json()
-        throw new Error(data.status, data.message);
+        throw{status: data.status, message: data.message};
       }
 
       navigate('/connexion')
 
     } catch(error) {
-      console.error("Erreur lors de l'inscription:", error);
+      console.error("Erreur lors de l'inscription:", error.message);
       setErrorMessage("Erreur lors de l'inscription. Veuillez réessayer.");
     }
   };
