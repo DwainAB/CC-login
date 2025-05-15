@@ -1,20 +1,40 @@
 import { useEffect } from 'react';
-
+import { useDispatch } from 'react-redux';
+import { logout } from '../store/authSlice';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 
 const Logout = () => {
-   useEffect(() => {
+  const token = useSelector((state) => state.auth.token);
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  useEffect(() => {
     const handleLogout = async () => {
-      // (1) Appel API pour notifier la déconnexion
 
-      // (2) Suppression du token côté frontend
+      const response = await fetch('https://offers-api.digistos.com/api/auth/logout', {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      })
 
-      // (3) Redirection vers la page de login
+      if (!response.ok) {
+        const data = await response.json()
+        console.error('Une erreur est survenue lors de la déconnexion');
+        throw { status: data.status, message: data.message }
+      }
+
+      dispatch(logout());
+
+      navigate('/connexion')
+
     };
 
     handleLogout();
   }, []);
 
-  return null; // Pas besoin d'afficher quoi que ce soit
+  return null;
 };
 
 export default Logout;

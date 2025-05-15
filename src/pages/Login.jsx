@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { Form, Button, Container, Card, Row, Col, Alert } from "react-bootstrap";
 import { useNavigate } from "react-router";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "../store/authSlice";
 
 const LoginPage = () => {
+  const dispatch = useDispatch();
   const [errorMessage, setErrorMessage] = useState(null)
   const navigate = useNavigate()
   const [formData, setFormData] = useState({
@@ -17,42 +20,51 @@ const LoginPage = () => {
     });
   };
 
-  const handleSubmit =  async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    try{
+    try {
 
-      const response = await fetch('https://offers-api.digistos.com/api/auth/login',{
+      const response = await fetch('https://offers-api.digistos.com/api/auth/login', {
         method: "POST",
-        headers:{
+        headers: {
           "Accept": "application/json",
           "Content-Type": "application/json"
         },
         body: JSON.stringify(formData)
-        },
+      },
       )
+
+      const data = await response.json();
 
 
       if (!response.ok) {
-        const data = await response.json();
         const error = new Error(
-           data.error || "Une erreur est survenue lors de l'inscription."
+          data.error || "Une erreur est survenue lors de l'inscription."
         );
         error.status = response.status;
         throw error;
-     }
+      }
+
+
+      dispatch(
+        loginSuccess({
+          token: data.access_token,
+          expiresAt: new Date(Date.now() + data.expires_in * 1000).toISOString(),
+        })
+      );
 
       navigate('/offres/professionnelles')
 
-    }catch(error){
+    } catch (error) {
       console.error('Une erreur est survenue', error)
 
-      if(error.status === 401){
+      if (error.status === 401) {
         setErrorMessage('Email ou mot de passe incorrect')
-      }else{
+      } else {
         setErrorMessage('Une erreur est survenue')
       }
 
-    } 
+    }
   };
 
   return (
