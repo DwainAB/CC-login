@@ -16,6 +16,7 @@ const OfferPublicList = () => {
             headers: {
               Accept: "application/json",
             },
+            credentials: 'include'
           }
         );
 
