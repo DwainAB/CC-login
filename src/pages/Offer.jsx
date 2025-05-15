@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Container, Card, Spinner, Alert } from "react-bootstrap";
 import { useSelector } from "react-redux";
@@ -23,12 +23,13 @@ const Offer = () => {
           }
         );
 
-        const data = await response.json();
+        const { data: offers, message } = await response.json();
+
         if (!response.ok) {
-          throw { status: response.status, message: data.message };
+          throw { status: response.status, message: message };
         }
 
-        setOffer(data);
+        setOffer(offers);
       } catch (err) {
         if (err.status === 401) {
           setError("Accès non autorisé (401).");
